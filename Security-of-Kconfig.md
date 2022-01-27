@@ -47,9 +47,15 @@
 | CONFIG_STATIC_USERMODEHELPER | Y | N/A | 选项会强制所有的usermodehelper通过单一的二进制程序调用,避免usermodehlper接口被滥用EOP | ALL | 
 | CONFIG_SECURITY_YAMA | N | kernel 3.4 | 访问权限控制类，Selinux弱化版本 | ALL | 
 | CONFIG_SECURITY_WRITABLE_HOOKS | N | N/A | 待补充 | ALL | 
-| CONFIG_SECURITY_LOCKDOWN_LSM | N | N/A | 待补充 | ALL | 
-| CONFIG_SECURITY_LOCKDOWN_LSM_EARLY | N | N/A | 待补充 | ALL | 
+| CONFIG_SECURITY_LOCKDOWN_LSM | N | N/A | 通过LSM hook的方法锁定内核，阻止一些高危操作。比如加载未签名的模块，访问特殊文件/dev/port等 | ALL | 
+| CONFIG_SECURITY_LOCKDOWN_LSM_EARLY | N | N/A | 同上 | ALL | 
 | CONFIG_LOCK_DOWN_KERNEL_FORCE_CONFIDENTIALITY | N | N/A | 待补充 | ALL | 
 | CONFIG_SECURITY_SAFESETID | N | N/A | 待补充 | ALL | 
 | CONFIG_SECURITY_LOADPIN | N | 2016年 | 用来确保所有内核加载的文件都是没有被篡改，利用新的内核文件加载机制去中断所有尝试加载进内核的文件，包括加载内核模块，读取固件，加载镜像等等，然后会把需要加载的文件与启动之后第一次加载使用的文件作比较，如果没有匹配则被阻止 | ALL | 
-| CONFIG_SECURITY_LOADPIN_ENFORCE | N | N/A |同上 | ALL | 
+| CONFIG_DEBUG_LIST | Y | kernel 2.6 | 用于调试链表操作，开启之后会在链表操作中执行额外检查 | ALL | 
+| CONFIG_DEBUG_SG | N | N/A |调试SG表的操作，开启之后会检查scatter-gather表，这个能帮助发现那些不能正确初始化SG表的驱动 | ALL | 
+| CONFIG_DEBUG_CREDENTIALS | N | N/A | 调试凭证管理，开启之后对凭证管理做调试检查，追踪task_struct到给定凭证结构的指针数量没有超过凭证结构的使用上限 | ALL | 
+| CONFIG_DEBUG_NOTIFIERS | N | N/A | 检测通知调用链的合法性，能确保模块正确的从通知链中注销 | ALL | 
+| CONFIG_DEBUG_VIRTUAL | N | N/A | 调试虚拟内存转换，开启之后在内存转换时会合法性检查 | ALL | 
+
+
