@@ -17,8 +17,9 @@
 | CONFIG_FTRACE | N | N/A | FTRACE用户外部调试的Hook feature | N/A | https://cateee.net/lkddb/web-lkddb/FTRACE.html |
 | CONFIG_STACKPROTECTOR_STRONG | Y | Kernel 4.+ | GCC通用的栈金丝雀保护功能，通过金丝雀的检查以确认栈未被修改 | ALL | https://cateee.net/lkddb/web-lkddb/FTRACE.html |
 | CONFIG_STRICT_KERNEL_RWX | Y | N/A | 设置内核text段的代码为RO | N/A | 
-| CONFIG_STRICT_MODULE_RWX | Y | kernel 4.11 | text模块和rodata的内存将变为只读，非text内存将变为不可执行 | N/A |
+| CONFIG_STRICT_MODULE_RWX | Y | kernel 4.11 | 内核模块数据段的内存将变为只读，非text内存将变为不可执行 | N/A |
 | CONFIG_ARM64_PAN | Y | ARM8.1 | 特权禁止访问，kernel和userspace禁止访问同一段内存 | ALL | 
+| CONFIG_ARM64_PAX | Not Set | ARM8.1 | 特权禁止执行，禁止内核空间和用户空间执行同一份文件，PAN的前身 | ALL | 
 | CONFIG_UNMAP_KERNEL_AT_EL0 | Y | 2018年 | 针对KPTI缺陷代码修复补丁之一 | ARM64 | 
 | CONFIG_HARDEN_EL2_VECTORS | N/A | kernel 4.17 | 将向量映射到固定位置，独立于 EL2 代码映射，因此向攻击者泄露 VBAR_EL2 不会泄露任何额外信息。只在受影响的 CPU 上启用 | ARM64 | 
 | CONFIG_RODATA_FULL_DEFAULT_ENABLED | Y | N/A | 将 VM 区域的 r/o 权限也应用于它们的线性别名 | N/A | 
@@ -57,5 +58,13 @@
 | CONFIG_DEBUG_CREDENTIALS | N | N/A | 调试凭证管理，开启之后对凭证管理做调试检查，追踪task_struct到给定凭证结构的指针数量没有超过凭证结构的使用上限 | ALL | 
 | CONFIG_DEBUG_NOTIFIERS | N | N/A | 检测通知调用链的合法性，能确保模块正确的从通知链中注销 | ALL | 
 | CONFIG_DEBUG_VIRTUAL | N | N/A | 调试虚拟内存转换，开启之后在内存转换时会合法性检查 | ALL | 
-
-
+| CONFIG_SHUFFLE_PAGE_ALLOCATOR | Y | kernel 5.2 | 页分配器随机分配内存，搭配SLAB_FREELIST_RANDOM让整个分配过程更加难以预测 | ALL | 
+| CONFIG_DEFAULT_MMAP_MIN_ADDR | 4096 | kernel 5.2 | 指定mmap产生的最小虚拟地址，因为地址空间过小可能会配合其他漏洞做进一步的利用 | ALL | 
+| CONFIG_INIT_STACK_ALL_ZERO | Y | kernel 5.15 |新分配的栈上的所有数据都初始化为0，消除了所有的未初始化栈变量的漏洞利用以及信息泄露 | ALL | 
+| CONFIG_PAGE_POISONING | Y | kernel 4.6 |在释放的页上做内存数据擦除工作。在free_pages()之后填入特殊的数据，在分配页之前会验证这个数据，以达到防御use after free的效果 | ALL | 
+| 内核安全属性 | | | | |
+| unprivileged_userfaultfd | 1 | N/A | 标志设置为1时，允许低权限用户使用，设置为0时禁止低权限用户使用，只有高权限用户能够调用。userfaultfd是Linux中处理内存页错误的机制，缺页发生的位置将会处于暂停状态，这会导致一些条件竞争漏洞的利用 | ALL |
+| slab_nomerge | N/A | N/A | 选项开启之后会禁止相近大小的slab合并，这个能有效防御一部分堆溢出的攻击，如果slab开启合并，被堆溢出篡改的slab块合并之后通常可以扩大攻击范围，让整个攻击危害更大 | N/A |
+| Manual usage of nospec barriers | N/A | N/A | 内核提供的通用API确保在分支预测的情况下边界检查是符合预期的。主要是两个API nospec_ptr(ptr, lo, hi)和nospec_array_ptr(arr, idx, sz)，第一个API会限制ptr在lo和hi的范围内，防止指针越界；第二个API会限制idx只有在[0,sz)的范围中才能获得arr[idx]的数据。 | N/A |
+| init_on_free/init_on_alloc | N/A | N/A | 阻止信息泄露和依赖于未初始化值的控制流漏洞。开启两个选项之一能保证页分配器返回的内存和SL[A|U]B是会被初始化为0 | N/A |
+| __ro_after_init | N/A | N/A | 在内核初始化完成之后把这些内存区域标记为只读，减小内核关键变量的攻击面 | N/A |
