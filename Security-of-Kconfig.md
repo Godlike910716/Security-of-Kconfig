@@ -64,16 +64,14 @@
 | CONFIG_DEFAULT_MMAP_MIN_ADDR | 4096 | kernel 5.2 | 指定mmap产生的最小虚拟地址，因为地址空间过小可能会配合其他漏洞做进一步的利用 | ALL | 
 | CONFIG_INIT_STACK_ALL_ZERO | Y | kernel 5.15 |新分配的栈上的所有数据都初始化为0，消除了所有的未初始化栈变量的漏洞利用以及信息泄露 | ALL | 
 | CONFIG_PAGE_POISONING | Y | kernel 4.6 |在释放的页上做内存数据擦除工作。在free_pages()之后填入特殊的数据，在分配页之前会验证这个数据，以达到防御use after free的效果 | ALL | 
-
 | CONFIG_F2FS_CHECK_FS | Y | kernel 3.13 |在Kernel启动时以BUG_ON检查F2FS文件系统一致性的 BUG_ON | ALL | 
 | CONFIG_ARCH_MMAP_RND_BITS_MIN | 18 | kernel 4.5 | 选择mmap 分配产生的 vma 区域基址的随机偏移量.此值将受体系结构的最小值的限制 | ALL | 
 | CONFIG_ARCH_MMAP_RND_BITS_MAX | 24 | kernel 4.5 | 选择mmap 分配产生的 vma 区域基址的随机偏移量.此值将受体系结构的最大值的限制 | ALL | 
 | CONFIG_ARCH_HAS_STRICT_KERNEL_RWX | Y | kernel 4.11 | 内核内存保护 | ALL | 
 | CONFIG_PANIC_ON_DATA_CORRUPTION | Y | kernel 4.10 | 内核在检查有效性时遇到内核内存结构中的数据损坏时应该出现 PANIC.调试用 | ALL | 
-
 | CONFIG_IP_NF_SECURITY | Y | kernel 2.6 | 增加一个安全的table到iptables，用于控制MAC（强制访问控制）策略 | ALL | 
 | CONFIG_IP6_NF_SECURITY | Not Set | kernel 2.6 | 同上，仅是IP4/6的差别 | ALL | 
-| CONFIG_EROFS_FS_SECURITY | Y | Android R | EROFS文件系统是华为研的一项提升手机随机读写性能的系统及应用编译和运行机制，全称为Extendable Read-Only File System，用作 erofs 安全标签的控制开关功能. | ALL | 
+| CONFIG_EROFS_FS_SECURITY | Y | Android R | EROFS文件系统是华为研的一项提升手机随机读写性能的系统及应用编译和运行机制，全称为Extendable Read-Only File System，用作 erofs 安全标签的控制开关功能 | ALL | 
 | CONFIG_SECURITY_PATH | Y | kernel 4.1 | 这为基于路径名的访问控制启用了security hook | ALL | 
 | CONFIG_LSM_MMAP_MIN_ADDR | 32768 | kernel 2.6 | 防止用户空间分配的低虚拟内存部分。阻止用户写入低页面有助于减少内核 NULL 指针错误的影响 | ALL | 
 | CONFIG_SECURITY_SELINUX_AVC_STATS | Y | kernel 2.6 | 将访问向量缓存统计信息收集到 /sys/fs/selinux/avc/cache_stats，可以通过 avcstat 等工具对其进行监控。 | ALL | 
@@ -84,8 +82,6 @@
 | CONFIG_CC_HAS_AUTO_VAR_INIT_PATTERN | Y | kernel 5.15 | 使用特定的调试值初始化堆栈上的所有内容（包括填充）。这旨在消除所有类别的未初始化堆栈变量漏洞利用和信息暴露，甚至是被警告未初始化的变量。特定情况的；64 位上的 Clang 对所有类型和填充使用 0xAA 重复，除了使用 0xFF 重复 (-NaN) 的浮点和双精度。32 位 Clang 对所有类型和填充使用 0xFF 重复。 | ALL | 
 | CONFIG_INIT_ON_ALLOC_DEFAULT_ON | Y | kernel 5.3 | 所有page allocator和slab allocator内存在分配时都会清零，消除了多种“未初始化的堆内存”缺陷，尤其是堆内容暴露 | ALL | 
 | CONFIG_INIT_STACK_NONE | Not Set | kernel 5.15 | 禁用自动堆栈变量初始化。这使得内核容易受到未初始化堆栈变量攻击和信息暴露的标准类的攻击 | ALL | 
-
-
 | 内核安全属性 | | | | |
 | unprivileged_userfaultfd | 1 | N/A | 标志设置为1时，允许低权限用户使用，设置为0时禁止低权限用户使用，只有高权限用户能够调用。userfaultfd是Linux中处理内存页错误的机制，缺页发生的位置将会处于暂停状态，这会导致一些条件竞争漏洞的利用 | ALL |
 | slab_nomerge | N/A | N/A | 选项开启之后会禁止相近大小的slab合并，这个能有效防御一部分堆溢出的攻击，如果slab开启合并，被堆溢出篡改的slab块合并之后通常可以扩大攻击范围，让整个攻击危害更大 | N/A |
