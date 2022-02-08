@@ -9,13 +9,15 @@
 | CONFIG_CFI_CLANG_SHADOW | Y | Android R | 同上 | ALL | https://source.android.google.cn/devices/tech/debug/kcfi?hl=zh-cn |
 | CONFIG_SECURITY_SELINUX | Y | Android L? | Selinux整体开关 | ALL | https://source.android.google.cn/security/selinux/implement?hl=zh-cn |
 | CONFIG_SECURITY_NETWORK | Y | N/A | Security Hook for socket or Network | N/A |https://www.cnblogs.com/cslunatic/p/3709356.html |
-| CONFIG_SECURITY_PERF_EVENTS_RESTRICT | Y | N/A | 预防通过PERF_EVENTS进行攻击 | N/A | https://patchwork.kernel.org/project/linux-hardening/patch/1469630783-32413-1-git-send-email-jeffv@google.com/ |
+| CONFIG_SECURITY_PERF_EVENTS_RESTRICT | N | N/A | 预防通过PERF_EVENTS进行攻击，在2020年1月，kernel.org社区认为selinux可以满足安全需求，此安全策略不再android上维护。详情：e92b6ef8fc963a068ff70188fb0458b1eeaa7175 | N/A | https://patchwork.kernel.org/project/linux-hardening/patch/1469630783-32413-1-git-send-email-jeffv@google.com/ |
 | CONFIG_F2FS_FS_SECURITY | Y | N/A | F2FS模块的LSM hook框架接口 | N/A | https://github.com/raspberrypi/linux/issues/2778 |
 | CONFIG_EXT4_FS_SECURITY | Y | N/A | EXT4模块的LSM hook框架接口 | N/A | https://boxmatrix.info/wiki/CONFIG_EXT4_FS_SECURITY |
 | CONFIG_QCOM_SECURE_BUFFER | Y | N/A |通过TZ保护缓冲区的辅助函数 | Qcom | https://patchwork.kernel.org/project/linux-arm-msm/patch/1483974609-25522-2-git-send-email-akdwived@codeaurora.org/ |
 | CONFIG_ARCH_MMAP_RND_BITS | Y | N/A |  选择从mmap分配产生的vma区域基地址的随机偏移量的位数 | N/A | https://cateee.net/lkddb/web-lkddb/ARCH_MMAP_RND_BITS.html |
 | CONFIG_FTRACE | N | N/A | FTRACE用户外部调试的Hook feature | N/A | https://cateee.net/lkddb/web-lkddb/FTRACE.html |
-| CONFIG_STACKPROTECTOR_STRONG | Y | Kernel 4.+ | GCC通用的栈金丝雀保护功能，通过金丝雀的检查以确认栈未被修改 | ALL | https://cateee.net/lkddb/web-lkddb/FTRACE.html |
+| CONFIG_STACKPROTECTOR | Y | kernel 4.18 | 堆栈金丝雀，在返回值和ESP之间假如canary，通过对canary的检测来判断返回值是否被篡改 | ALL | 
+| CONFIG_STACKPROTECTOR_STRONG | Y | Kernel 4.18 | GCC通用的栈金丝雀保护功能，通过金丝雀的检查以确认栈未被修改 | ALL | https://cateee.net/lkddb/web-lkddb/FTRACE.html |
+| CONFIG_HAVE_STACKPROTECTOR | Y | Kernel 4.18 | GCC通用的栈金丝雀保护功能，通过金丝雀的检查以确认栈未被修改 | ALL | https://cateee.net/lkddb/web-lkddb/FTRACE.html |
 | CONFIG_STRICT_KERNEL_RWX | Y | N/A | 设置内核text段的代码为RO | N/A | 
 | CONFIG_STRICT_MODULE_RWX | Y | kernel 4.11 | 内核模块数据段的内存将变为只读，非text内存将变为不可执行 | N/A |
 | CONFIG_ARM64_PAN | Y | ARM8.1 | 特权禁止访问，kernel和userspace禁止访问同一段内存 | ALL | 
@@ -62,6 +64,28 @@
 | CONFIG_DEFAULT_MMAP_MIN_ADDR | 4096 | kernel 5.2 | 指定mmap产生的最小虚拟地址，因为地址空间过小可能会配合其他漏洞做进一步的利用 | ALL | 
 | CONFIG_INIT_STACK_ALL_ZERO | Y | kernel 5.15 |新分配的栈上的所有数据都初始化为0，消除了所有的未初始化栈变量的漏洞利用以及信息泄露 | ALL | 
 | CONFIG_PAGE_POISONING | Y | kernel 4.6 |在释放的页上做内存数据擦除工作。在free_pages()之后填入特殊的数据，在分配页之前会验证这个数据，以达到防御use after free的效果 | ALL | 
+
+| CONFIG_F2FS_CHECK_FS | Y | kernel 3.13 |在Kernel启动时以BUG_ON检查F2FS文件系统一致性的 BUG_ON | ALL | 
+| CONFIG_ARCH_MMAP_RND_BITS_MIN | 18 | kernel 4.5 | 选择mmap 分配产生的 vma 区域基址的随机偏移量.此值将受体系结构的最小值的限制 | ALL | 
+| CONFIG_ARCH_MMAP_RND_BITS_MAX | 24 | kernel 4.5 | 选择mmap 分配产生的 vma 区域基址的随机偏移量.此值将受体系结构的最大值的限制 | ALL | 
+| CONFIG_ARCH_HAS_STRICT_KERNEL_RWX | Y | kernel 4.11 | 内核内存保护 | ALL | 
+| CONFIG_PANIC_ON_DATA_CORRUPTION | Y | kernel 4.10 | 内核在检查有效性时遇到内核内存结构中的数据损坏时应该出现 PANIC.调试用 | ALL | 
+
+| CONFIG_IP_NF_SECURITY | Y | kernel 2.6 | 增加一个安全的table到iptables，用于控制MAC（强制访问控制）策略 | ALL | 
+| CONFIG_IP6_NF_SECURITY | Not Set | kernel 2.6 | 同上，仅是IP4/6的差别 | ALL | 
+| CONFIG_EROFS_FS_SECURITY | Y | Android R | EROFS文件系统是华为研的一项提升手机随机读写性能的系统及应用编译和运行机制，全称为Extendable Read-Only File System，用作 erofs 安全标签的控制开关功能. | ALL | 
+| CONFIG_SECURITY_PATH | Y | kernel 4.1 | 这为基于路径名的访问控制启用了security hook | ALL | 
+| CONFIG_LSM_MMAP_MIN_ADDR | 32768 | kernel 2.6 | 防止用户空间分配的低虚拟内存部分。阻止用户写入低页面有助于减少内核 NULL 指针错误的影响 | ALL | 
+| CONFIG_SECURITY_SELINUX_AVC_STATS | Y | kernel 2.6 | 将访问向量缓存统计信息收集到 /sys/fs/selinux/avc/cache_stats，可以通过 avcstat 等工具对其进行监控。 | ALL | 
+| CONFIG_SECURITY_SELINUX_SIDTAB_HASH_BITS | 9 | kernel 5.6 | 将 sidtab 哈希表中使用的桶数设置为 2^SECURITY_SELINUX_SIDTAB_HASH_BITS，减少HASH冲突的风险 | ALL | 
+| CONFIG_SECURITY_SELINUX_CHECKREQPROT_VALUE | 0 | kernel 2.6 | 设置“checkreqprot”标志的默认值，该标志确定 SELinux 是检查应用程序请求的保护还是内核将应用的保护（包括 read-implies-exec 的任何隐含执行）用于 mmap 和 mprotect 调用 | ALL | 
+| CONFIG_INTEGRITY | Y | kernel 3.18 | 项启用完整性子系统，该子系统由许多不同的组件组成，包括完整性测量架构 (IMA)、扩展验证模块 (EVM)、IMA 评估扩展、数字签名验证扩展和审计测量日志支持。 | ALL | 
+| CONFIG_INTEGRITY_AUDIT | Y | kernel 3.11 | 同上子选项，除了启用完整性审计支持外，此选项还添加了一个内核参数“integrity_audit”，它控制完整性审计消息的级别。0 - 基本完整性审计消息（默认） 1 - 附加完整性审计消息 | ALL | 
+| CONFIG_CC_HAS_AUTO_VAR_INIT_PATTERN | Y | kernel 5.15 | 使用特定的调试值初始化堆栈上的所有内容（包括填充）。这旨在消除所有类别的未初始化堆栈变量漏洞利用和信息暴露，甚至是被警告未初始化的变量。特定情况的；64 位上的 Clang 对所有类型和填充使用 0xAA 重复，除了使用 0xFF 重复 (-NaN) 的浮点和双精度。32 位 Clang 对所有类型和填充使用 0xFF 重复。 | ALL | 
+| CONFIG_INIT_ON_ALLOC_DEFAULT_ON | Y | kernel 5.3 | 所有page allocator和slab allocator内存在分配时都会清零，消除了多种“未初始化的堆内存”缺陷，尤其是堆内容暴露 | ALL | 
+| CONFIG_INIT_STACK_NONE | Not Set | kernel 5.15 | 禁用自动堆栈变量初始化。这使得内核容易受到未初始化堆栈变量攻击和信息暴露的标准类的攻击 | ALL | 
+
+
 | 内核安全属性 | | | | |
 | unprivileged_userfaultfd | 1 | N/A | 标志设置为1时，允许低权限用户使用，设置为0时禁止低权限用户使用，只有高权限用户能够调用。userfaultfd是Linux中处理内存页错误的机制，缺页发生的位置将会处于暂停状态，这会导致一些条件竞争漏洞的利用 | ALL |
 | slab_nomerge | N/A | N/A | 选项开启之后会禁止相近大小的slab合并，这个能有效防御一部分堆溢出的攻击，如果slab开启合并，被堆溢出篡改的slab块合并之后通常可以扩大攻击范围，让整个攻击危害更大 | N/A |
